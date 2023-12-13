@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 15:01:58 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/13 14:21:16 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/13 15:03:06 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,24 @@ int	main(int argc, char **argv)
 	if (pid == 0)
 	{
 		infile = open("infile.txt", O_WRONLY);
-		dup2(infile, STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
+		/*dup2(infile, STDIN_FILENO);*/
 		close(fd[0]);
-		close(fd[1]);
-		/*args1 = ft_split(argv[1], 32);
-		ft_printf("%s", args1[0]);*/
+		printf("%d\n", 5);
+		dup2(fd[1], STDOUT_FILENO);
+		
+		printf("%d\n", 6);
+		
 		if (execve("/usr/bin/grep", args1, NULL) == -1)
 			perror("Could not execve");
+		
+		
+		/*
+		args1 = ft_split(argv[1], 32);
+		ft_printf("%s", args1[0]);*/
+		
+		
+		printf("%d\n", 6);
+		close(infile);
 	}
 	else
 	{
@@ -53,6 +63,7 @@ int	main(int argc, char **argv)
 		/*args2 = ft_split(argv[2], 32);*/
 		if (execve("/usr/bin/wc", args2, NULL) == -1)
 			perror("Could not execve");
+		close(outfile);
 	}
 	close(fd[0]);
 	close(fd[1]);
