@@ -1,5 +1,5 @@
-#ifndef PIPEX.H
-# define PIPEX.H
+#ifndef PIPEX_H
+# define PIPEX_H
 
 # include <unistd.h> 
 # include <stdio.h> 
@@ -10,5 +10,7 @@
 # include <stdarg.h>
 # include "libft/libft.h"
 # include <fcntl.h>
+# include <sys/types.h> 
+# include <sys/wait.h> 
 
 #endif
