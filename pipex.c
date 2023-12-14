@@ -17,8 +17,8 @@ int	main(int argc, char **argv)
 	(void) argv;
 	int	fd[2];
 	int	pid;
-	int	infile;
-	int	outfile;
+	int	fd_inf;
+	int	fd_outf;
 	char	*args1[] = {"grep", "a1", NULL};
 	char	*args2[] = {"wc", "-w", NULL};
 	if (argc != 3)
@@ -33,40 +33,46 @@ int	main(int argc, char **argv)
 		return (2);
 	if (pid == 0)
 	{
-		infile = open("infile.txt", O_WRONLY);
-		/*dup2(infile, STDIN_FILENO);*/
 		close(fd[0]);
-		printf("%d\n", 5);
+		fd_inf = open("infile", O_RDONLY);
+		if (fd_inf == -1)
+        {
+            perror("open");
+            exit(EXIT_FAILURE);
+        }
+		dup2(fd_inf, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
-		
-		printf("%d\n", 6);
-		
+		close(fd_inf);
+		close(fd[1]);
 		if (execve("/usr/bin/grep", args1, NULL) == -1)
-			perror("Could not execve");
-		
-		
+		{
+            perror("execve");
+            exit(EXIT_FAILURE);
+        }
 		/*
 		args1 = ft_split(argv[1], 32);
 		ft_printf("%s", args1[0]);*/
-		
-		
-		printf("%d\n", 6);
-		close(infile);
 	}
 	else
 	{
-		outfile = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
-		dup2(outfile, STDOUT_FILENO);
+		wait(NULL);
+		close(fd[1]);
+		fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		dup2(fd_outf, STDOUT_FILENO);
+		fprintf(stderr, "test3\n");
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
-		close(fd[1]);
+		close(fd_outf);
+		
 		/*args2 = ft_split(argv[2], 32);*/
 		if (execve("/usr/bin/wc", args2, NULL) == -1)
 			perror("Could not execve");
-		close(outfile);
+		
 	}
 	close(fd[0]);
 	close(fd[1]);
+	
+	return(0);
 
 	/*
 		waitpid(pid, NULL, 0);
