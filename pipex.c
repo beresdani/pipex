@@ -6,15 +6,29 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 15:01:58 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/14 14:28:53 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/14 14:46:13 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*get_path(char **env)
+void	free_array(char **arr)
 {
 	int	i;
+
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		free(arr[i]);
+		i++;
+	}
+} 
+
+char	*get_path(char **env)
+{
+	int		i;
+	int		len;
+	char	*path
 
 	i = 0;
 	while (env[i] != NULL)
@@ -39,9 +53,15 @@ char	*get_dir(char *str, char *cmd)
 	{
 		dir = ft_strjoin(dirs[i], cmd);
 		if (access(dir, F_OK) == 0)
+		{
+			free_array(dirs);
+			free(dirs);
 			return (dir);
+		}
 		i++;
 	}
+	free(dirs);
+	free_array(dirs);
 	return (NULL);
 }
 
