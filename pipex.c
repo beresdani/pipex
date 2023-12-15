@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 15:01:58 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/14 14:46:13 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/15 16:45:10 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ char	*get_path(char **env)
 {
 	int		i;
 	int		len;
-	char	*path
+	char	*path;
 
 	i = 0;
 	while (env[i] != NULL)
 	{
-		if (ft_strncmp(env[i], "PATH", 4) == 0)
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
 			return (env[i]);
 		i++;
 	}
@@ -60,8 +60,9 @@ char	*get_dir(char *str, char *cmd)
 		}
 		i++;
 	}
-	free(dirs);
 	free_array(dirs);
+	free(dirs);
+	
 	return (NULL);
 }
 
@@ -77,6 +78,8 @@ void	child_process(char **argv, int fd[2], char *path, char **envp)
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
 	{
+		free_array(args1);
+		free(args1);
 		perror("open");
 		exit(EXIT_FAILURE);
 	}
@@ -86,6 +89,8 @@ void	child_process(char **argv, int fd[2], char *path, char **envp)
 	close(fd[1]);
 	if (execve(directory, args1, envp) == -1)
 	{
+		free_array(args1);
+		free(args1);
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
@@ -97,7 +102,6 @@ void	parent_process(char **argv, int fd[2], char *path, char **envp)
 	char	**args2;
 	char	*directory2;
 
-	args2 = (char **)malloc(sizeof(char *)*);
 	args2 = ft_split(argv[3], 32);
 	directory2 = get_dir(path, args2[0]);
 	wait(NULL);
@@ -105,6 +109,8 @@ void	parent_process(char **argv, int fd[2], char *path, char **envp)
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
+		free_array(args2);
+		free(args2);
 		perror("open");
 		exit(EXIT_FAILURE);
 	}
@@ -114,22 +120,19 @@ void	parent_process(char **argv, int fd[2], char *path, char **envp)
 	close(fd_outf);
 	if (execve(directory2, args2, envp) == -1)
 	{
+		free_array(args2);
+		free(args2);
 		perror("Could not execve");
 		exit(EXIT_FAILURE);
 	}
 }
 
-int	main(int argc, char **argv, char **env)
+int	single_pipe(char **argv, char **env)
 {
 	int		fd[2];
 	int		pid;
 	char	*path;
 
-	if (argc != 5)
-	{
-		ft_printf("Wrong input.");
-		return (1);
-	}
 	path = get_path(env);
 	if (pipe(fd) == -1)
 		return (1);
@@ -143,4 +146,51 @@ int	main(int argc, char **argv, char **env)
 	close(fd[0]);
 	close(fd[1]);
 	return (0);
+}
+
+int	multi_pipe(int pipes, char **argv, char **env)
+{
+	int		fd[pipes][2];
+	int		pid[pipes];
+	char	*path;
+	int		i;
+
+	path = get_path(env);
+	while (i < pipes)
+	{
+		if (pipe(fd[i]) == -1)
+			free_exit(1);
+		pid[i] = fork();
+		if (pid[i] == -1)
+			free_exit();
+		if (pid[i] == 0)
+			child_process(argv, fd[i], path, env);
+		i++;
+	}
+
+}
+
+int	main(int argc, char **argv, char **env)
+{
+	int pipes;
+	
+	pipes = argc - 3;
+	if (argc < 5)
+	{
+		ft_printf("Wrong input.");
+		return (1);
+	}
+	else if (argc == 5)
+	{
+		if (single_pipe(argv, env) != 0)
+			return (2);
+		return (0);
+	}
+	else
+	{
+		if (multi_pipe(pipes, argv, env) != 0)
+			return (3);
+		return (0);
+	}
+
 }

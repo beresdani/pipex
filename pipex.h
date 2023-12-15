@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dberes <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:18:20 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/14 14:18:23 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/15 16:37:27 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,7 @@
 void	child_process(char **argv, int fd[2], char *PATH, char **envp);
 void	parent_process(char **argv, int fd[2], char *PATH, char **envp);
 char	*get_path(char **env);
+int		single_pipe(char **argv, char **env);
+int		multi_pipe(int pipes, char **argv, char **env);
 
 #endif
