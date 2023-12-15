@@ -25,8 +25,8 @@
 # include <sys/types.h> 
 # include <sys/wait.h> 
 
-void	child_process(char **argv, int fd[2], char *PATH, char **envp);
-void	parent_process(char **argv, int fd[2], char *PATH, char **envp);
+void	child_process(char **argv, int fd[2], char *PATH, char **envp, int ind);
+void	parent_process(char **argv, int fd[2], char *PATH, char **envp, int ind);
 char	*get_path(char **env);
 int		single_pipe(char **argv, char **env);
 int		multi_pipe(int pipes, char **argv, char **env);

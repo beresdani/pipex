@@ -12,6 +12,13 @@
 
 #include "pipex.h"
 
+/*
+void	free_exit(int err)
+{
+
+}
+*/
+
 void	free_array(char **arr)
 {
 	int	i;
@@ -27,8 +34,6 @@ void	free_array(char **arr)
 char	*get_path(char **env)
 {
 	int		i;
-	int		len;
-	char	*path;
 
 	i = 0;
 	while (env[i] != NULL)
@@ -66,13 +71,13 @@ char	*get_dir(char *str, char *cmd)
 	return (NULL);
 }
 
-void	child_process(char **argv, int fd[2], char *path, char **envp)
+void	child_process(char **argv, int fd[2], char *path, char **envp, int ind)
 {
 	char	**args1;
 	char	*directory;
 	int		fd_inf;
 
-	args1 = ft_split(argv[2], 32);
+	args1 = ft_split(argv[ind], 32);
 	directory = get_dir(path, args1[0]);
 	close(fd[0]);
 	fd_inf = open("infile", O_RDONLY);
@@ -96,13 +101,13 @@ void	child_process(char **argv, int fd[2], char *path, char **envp)
 	}
 }
 
-void	parent_process(char **argv, int fd[2], char *path, char **envp)
+void	parent_process(char **argv, int fd[2], char *path, char **envp, int ind)
 {
 	int		fd_outf;
 	char	**args2;
 	char	*directory2;
 
-	args2 = ft_split(argv[3], 32);
+	args2 = ft_split(argv[ind], 32);
 	directory2 = get_dir(path, args2[0]);
 	wait(NULL);
 	close(fd[1]);
@@ -140,9 +145,9 @@ int	single_pipe(char **argv, char **env)
 	if (pid == -1)
 		return (2);
 	if (pid == 0)
-		child_process(argv, fd, path, env);
+		child_process(argv, fd, path, env, 2);
 	else
-		parent_process(argv, fd, path, env);
+		parent_process(argv, fd, path, env, 3);
 	close(fd[0]);
 	close(fd[1]);
 	return (0);
@@ -159,22 +164,23 @@ int	multi_pipe(int pipes, char **argv, char **env)
 	while (i < pipes)
 	{
 		if (pipe(fd[i]) == -1)
-			free_exit(1);
+			return (1);
 		pid[i] = fork();
 		if (pid[i] == -1)
-			free_exit();
+			return (2);
 		if (pid[i] == 0)
-			child_process(argv, fd[i], path, env);
+			child_process(argv, fd[i], path, env, i + 2);
 		i++;
 	}
-
+		
+	return (0);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	int pipes;
 	
-	pipes = argc - 3;
+	pipes = argc -3;
 	if (argc < 5)
 	{
 		ft_printf("Wrong input.");
