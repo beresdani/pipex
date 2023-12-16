@@ -17,8 +17,13 @@ void	free_exit(int err)
 {
 
 }
-*/
 
+
+void	fd_closer(s_data *data, int read, int write)
+{
+
+}
+*/
 void	free_array(char **arr)
 {
 	int	i;
@@ -153,34 +158,11 @@ int	single_pipe(char **argv, char **env)
 	return (0);
 }
 
-int	multi_pipe(int pipes, char **argv, char **env)
-{
-	int		fd[pipes][2];
-	int		pid[pipes];
-	char	*path;
-	int		i;
-
-	path = get_path(env);
-	while (i < pipes)
-	{
-		if (pipe(fd[i]) == -1)
-			return (1);
-		pid[i] = fork();
-		if (pid[i] == -1)
-			return (2);
-		if (pid[i] == 0)
-			child_process(argv, fd[i], path, env, i + 2);
-		i++;
-	}
-		
-	return (0);
-}
-
 int	main(int argc, char **argv, char **env)
 {
 	int pipes;
 	
-	pipes = argc -3;
+	pipes = argc -2;
 	if (argc < 5)
 	{
 		ft_printf("Wrong input.");

@@ -23,11 +23,23 @@
 # include "libft/libft.h"
 # include <fcntl.h>
 # include <sys/types.h> 
-# include <sys/wait.h> 
+# include <sys/wait.h>
 
-void	child_process(char **argv, int fd[2], char *PATH, char **envp, int ind);
-void	parent_process(char **argv, int fd[2], char *PATH, char **envp, int ind);
+typedef struct t_data
+{
+    int             pipes;
+	int             fd[3][2];
+    pid_t           pid[3];
+}	s_data;
+
+void	first_child_process(char **argv, s_data *data, char *path, char **envp, int ind);
+void	multi_child_process(char **argv, s_data *data, char *path, char **envp, int ind);
+void	multi_parent_process(char **argv, s_data *data, char *path, char **envp, int ind);
+void	child_process(char **argv, int fd[2], char *path, char **envp, int ind);
+void	parent_process(char **argv, int fd[2], char *path, char **envp, int ind);
 char	*get_path(char **env);
+char	*get_dir(char *str, char *cmd);
+void	free_array(char **arr);
 int		single_pipe(char **argv, char **env);
 int		multi_pipe(int pipes, char **argv, char **env);
 
