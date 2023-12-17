@@ -28,8 +28,8 @@
 typedef struct t_data
 {
     int             pipes;
-	int             fd[3][2];
-    pid_t           pid[3];
+	int             (*fd)[2];
+    pid_t           pid[];
 }	s_data;
 
 void	first_child_process(char **argv, s_data *data, char *path, char **envp, int ind);

@@ -162,7 +162,7 @@ int	main(int argc, char **argv, char **env)
 {
 	int pipes;
 	
-	pipes = argc -2;
+	pipes = argc - 3;
 	if (argc < 5)
 	{
 		ft_printf("Wrong input.");
