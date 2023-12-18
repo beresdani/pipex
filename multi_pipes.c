@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-
+/*
 void	fd_closer(int ind, t_data **data)
 {
 	int		i;
@@ -26,16 +26,24 @@ void	fd_closer(int ind, t_data **data)
 	while (i < pipes)
 	{
 		if (ind == 0)
+		{
+			printf("zero %d\n", node->fd[0]);
 			close(node->fd[0]);
+		}
 		else if (ind == pipes)
+		{
+			printf("last %d\n", node->fd[1]);
 			close(node->fd[1]);
+		}
 		else
 		{
+			printf("first %d %d\n", node->fd[1], node->next->fd[0]);
 			close(node->fd[1]);
 			close(node->next->fd[0]);
 		}
 		if (ind < pipes && i != ind && i != ind + 1)
 		{
+			printf("second %d %d\n", node->fd[0], node->fd[1]);
 			close(node->fd[0]);
 			close(node->fd[1]);
 		}
@@ -44,6 +52,7 @@ void	fd_closer(int ind, t_data **data)
 		i++;
 	}
 }
+*/
 
 void	first_child_process(char **argv, t_data **data, char *path, char **envp, int ind)
 {
@@ -55,7 +64,9 @@ void	first_child_process(char **argv, t_data **data, char *path, char **envp, in
 	node = *data;
 	args1 = ft_split(argv[ind + 2], 32);
 	directory = get_dir(path, args1[0]);
-	fd_closer(ind, data);
+	close(node->fd[0]);
+	close(node->next->fd[1]);
+	close(node->next->fd[0]);
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
 	{
@@ -88,16 +99,18 @@ void	multi_child_process(char **argv, t_data **data, char *path, char **envp, in
 	node = *data;
 	while (i < ind)
 	{
+		printf("%d\n", i);
 		node = node->next;
 		i++;
 	}
-	args1 = ft_split(argv[ind + 2], 32);
+	args1 = ft_split(argv[ind + 3], 32);
 	directory = get_dir(path, args1[0]);
-	fd_closer(ind, data);
-	dup2(node->fd[0], STDIN_FILENO);
-	dup2(node->fd[1], STDOUT_FILENO);
-	close(node->fd[0]);
 	close(node->fd[1]);
+	close(node->next->fd[0]);
+	dup2(node->fd[0], STDIN_FILENO);
+	dup2(node->next->fd[1], STDOUT_FILENO);
+	close(node->fd[0]);
+	close(node->next->fd[1]);
 	if (execve(directory, args1, envp) == -1)
 	{
 		free_array(args1);
@@ -117,14 +130,16 @@ void	last_child_process(char **argv, t_data **data, char *path, char **envp, int
 
 	i = 0;
 	node = *data;
-	while (i < ind)
+	close(node->fd[1]);
+	close(node->fd[0]);
+	while (i < ind - 1)
 	{
 		node = node->next;
 		i++;
 	}
 	args2 = ft_split(argv[ind + 2], 32);
 	directory2 = get_dir(path, args2[0]);
-	fd_closer(ind, data);
+	close(node->fd[1]);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
@@ -157,14 +172,20 @@ int	multi_pipe(int pipes, char **argv, char **env)
 	i = 0;
 	data = (t_data **)malloc(sizeof(t_data *));
 	*data = NULL;
-	while (i < pipes)
+	while (i < pipes + 1)
 	{
 		node = (t_data *)malloc(sizeof(t_data));
 		if (node == NULL)
 			return(0);
 		*node = (t_data){0};
-		if (pipe(node->fd) == -1)
-			return (1);
+		if (i < pipes)
+		{
+			if (pipe(node->fd) == -1)
+			{
+				perror("pipe");
+    			exit(EXIT_FAILURE);
+			}
+		}
 		node->pid = fork();
 		if (node->pid == -1)
 			return (2);
@@ -174,7 +195,7 @@ int	multi_pipe(int pipes, char **argv, char **env)
         // Child process
         	if (i == 0)
             	first_child_process(argv, data, path, env, i);
-        	else if (i != pipes - 1)
+        	else if (i != pipes)
             	multi_child_process(argv, data, path, env, i - 1);
 			else
 				last_child_process(argv, data, path, env, pipes);
@@ -183,9 +204,9 @@ int	multi_pipe(int pipes, char **argv, char **env)
     	i++;
 	}
 	i = 0;
+	node = *data;
 	while (i < pipes)
 	{	
-		node = *data;
 		waitpid(node->pid, NULL, 0);
 		node = node->next;
 		i++;
