@@ -6,7 +6,7 @@
 #    By: dberes <dberes@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/23 15:49:50 by grherman          #+#    #+#              #
-#    Updated: 2023/12/11 18:30:26 by dberes           ###   ########.fr        #
+#    Updated: 2023/12/18 14:04:14 by dberes           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra -g
 LIBFT =-Llibft/ -lft
 NAME = pipex
-SRC = pipex.c multi_pipes.c
+SRC = pipex.c multi_pipes.c list_utils.c
 # MLX=-lXext -lX11 -lz -lm -lmlx
 OBJ = $(SRC:.c=.o)
 

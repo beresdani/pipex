@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 15:01:58 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/15 16:45:10 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/18 11:55:46 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 
 /*
 void	free_exit(int err)
-{
-
-}
-
-
-void	fd_closer(s_data *data, int read, int write)
 {
 
 }

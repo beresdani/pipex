@@ -1,38 +1,58 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   multi_pipes.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/18 14:03:50 by dberes            #+#    #+#             */
+/*   Updated: 2023/12/18 16:13:00 by dberes           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 
-void	fd_closer(int ind, s_data *data)
+void	fd_closer(int ind, t_data **data)
 {
-	int	i;
-	
+	int		i;
+	int		pipes;
+	t_data	*node;
+
 	i = 0;
-	while (i < data->pipes)
+	
+	node = *data;
+	pipes = list_size(data);
+	while (i < pipes)
 	{
 		if (ind == 0)
-			close(data->fd[0][0]);
-		else if (ind == data->pipes)
-			close(data->fd[ind -1][1]);
+			close(node->fd[0]);
+		else if (ind == pipes)
+			close(node->fd[1]);
 		else
 		{
-			close(data->fd[ind - 1][1]);
-			close(data->fd[ind][0]);
+			close(node->fd[1]);
+			close(node->next->fd[0]);
 		}
-		if (ind > 0 && i != ind && i != ind -1)
+		if (ind < pipes && i != ind && i != ind + 1)
 		{
-			close(data->fd[i][0]);
-			close(data->fd[i][1]);
+			close(node->fd[0]);
+			close(node->fd[1]);
 		}
+		if (node->next != NULL)
+			node = node->next;
 		i++;
 	}
 }
 
-
-void	first_child_process(char **argv, s_data *data, char *path, char **envp, int ind)
+void	first_child_process(char **argv, t_data **data, char *path, char **envp, int ind)
 {
 	char	**args1;
 	char	*directory;
 	int		fd_inf;
+	t_data	*node;
 
+	node = *data;
 	args1 = ft_split(argv[ind + 2], 32);
 	directory = get_dir(path, args1[0]);
 	fd_closer(ind, data);
@@ -45,9 +65,9 @@ void	first_child_process(char **argv, s_data *data, char *path, char **envp, int
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_inf, STDIN_FILENO);
-	dup2(data->fd[0][1], STDOUT_FILENO);
+	dup2(node->fd[1], STDOUT_FILENO);
 	close(fd_inf);
-	close(data->fd[0][1]);
+	close(node->fd[1]);
 	if (execve(directory, args1, envp) == -1)
 	{
 		free_array(args1);
@@ -57,18 +77,27 @@ void	first_child_process(char **argv, s_data *data, char *path, char **envp, int
 	}
 }
 
-void	multi_child_process(char **argv, s_data *data, char *path, char **envp, int ind)
+void	multi_child_process(char **argv, t_data **data, char *path, char **envp, int ind)
 {
 	char	**args1;
 	char	*directory;
+	t_data	*node;
+	int		i;
 
+	i = 0;
+	node = *data;
+	while (i < ind)
+	{
+		node = node->next;
+		i++;
+	}
 	args1 = ft_split(argv[ind + 2], 32);
 	directory = get_dir(path, args1[0]);
 	fd_closer(ind, data);
-	dup2(data->fd[0][0], STDIN_FILENO);
-	dup2(data->fd[1][1], STDOUT_FILENO);
-	close(data->fd[0][0]);
-	close(data->fd[1][1]);
+	dup2(node->fd[0], STDIN_FILENO);
+	dup2(node->fd[1], STDOUT_FILENO);
+	close(node->fd[0]);
+	close(node->fd[1]);
 	if (execve(directory, args1, envp) == -1)
 	{
 		free_array(args1);
@@ -78,15 +107,23 @@ void	multi_child_process(char **argv, s_data *data, char *path, char **envp, int
 	}
 }
 
-void	multi_parent_process(char **argv, s_data *data, char *path, char **envp, int ind)
+void	last_child_process(char **argv, t_data **data, char *path, char **envp, int ind)
 {
 	int		fd_outf;
 	char	**args2;
 	char	*directory2;
+	t_data	*node;
+	int		i;
 
+	i = 0;
+	node = *data;
+	while (i < ind)
+	{
+		node = node->next;
+		i++;
+	}
 	args2 = ft_split(argv[ind + 2], 32);
 	directory2 = get_dir(path, args2[0]);
-	wait(NULL);
 	fd_closer(ind, data);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
@@ -97,8 +134,8 @@ void	multi_parent_process(char **argv, s_data *data, char *path, char **envp, in
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_outf, STDOUT_FILENO);
-	dup2(data->fd[1][0], STDIN_FILENO);
-	close(data->fd[1][0]);
+	dup2(node->fd[0], STDIN_FILENO);
+	close(node->fd[0]);
 	close(fd_outf);
 	if (execve(directory2, args2, envp) == -1)
 	{
@@ -113,41 +150,46 @@ int	multi_pipe(int pipes, char **argv, char **env)
 {
 	char	*path;
 	int		i;
-	s_data	*data;
-
-	data = malloc(sizeof(s_data) + pipes*sizeof(int[2]) + pipes*sizeof(pid_t));
-	if (data != NULL) 
-	{
-        data->pipes = pipes;
-		data->fd = (int(*)[2])(data + 1);
-        if (data->fd == NULL) 
-		{
-            free(data);
-            return (3);
-		}
-    }
-	data->pipes = pipes;
+	t_data	**data;
+	t_data	*node;
+	
 	path = get_path(env);
 	i = 0;
+	data = (t_data **)malloc(sizeof(t_data *));
+	*data = NULL;
 	while (i < pipes)
 	{
-		if (pipe(data->fd[i]) == -1)
+		node = (t_data *)malloc(sizeof(t_data));
+		if (node == NULL)
+			return(0);
+		*node = (t_data){0};
+		if (pipe(node->fd) == -1)
 			return (1);
-		data->pid[i] = fork();
-		if (data->pid[i] == -1)
+		node->pid = fork();
+		if (node->pid == -1)
 			return (2);
-		if (data->pid[i] == 0)
+		add_pipe_node(data, node);
+		if (node->pid == 0)
     	{
         // Child process
         	if (i == 0)
             	first_child_process(argv, data, path, env, i);
-        	else
-            	multi_child_process(argv, data, path, env, i);
+        	else if (i != pipes - 1)
+            	multi_child_process(argv, data, path, env, i - 1);
+			else
+				last_child_process(argv, data, path, env, pipes);
         	exit(EXIT_SUCCESS); // Make sure child exits after its work
     	}
     	i++;
 	}
-	multi_parent_process(argv, data, path, env, pipes);	
+	i = 0;
+	while (i < pipes)
+	{	
+		node = *data;
+		waitpid(node->pid, NULL, 0);
+		node = node->next;
+		i++;
+	}
     return (0);
 }
 		
