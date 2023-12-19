@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 15:01:58 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/18 11:55:46 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/19 10:49:30 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ void	parent_process(char **argv, int fd[2], char *path, char **envp, int ind)
 
 	args2 = ft_split(argv[ind], 32);
 	directory2 = get_dir(path, args2[0]);
-	wait(NULL);
 	close(fd[1]);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
@@ -149,6 +148,7 @@ int	single_pipe(char **argv, char **env)
 		parent_process(argv, fd, path, env, 3);
 	close(fd[0]);
 	close(fd[1]);
+	waitpid(pid, NULL, 0);
 	return (0);
 }
 
