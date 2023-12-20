@@ -1,1 +1,11 @@
-14
+-rw-rw-rw-  1 codespace root       1455 Dec 19 20:09 Makefile
+-rw-rw-rw-  1 codespace root         11 Dec 19 20:09 file.txt
+-rw-rw-rw-  1 codespace root         31 Dec 19 20:09 infile
+drwxrwxrwx+ 2 codespace root       4096 Dec 19 20:09 libft
+-rw-rw-rw-  1 codespace root       1494 Dec 19 20:09 list_utils.c
+-rw-rw-rw-  1 codespace root       7512 Dec 19 20:09 list_utils.o
+-rw-rw-rw-  1 codespace root       4663 Dec 20 11:12 multi_pipes.c
+-rw-rw-rw-  1 codespace root         31 Dec 20 11:26 outfile
+-rw-rw-rw-  1 codespace root       3364 Dec 20 11:26 pipex.c
+-rw-rw-rw-  1 codespace root       2196 Dec 20 11:21 pipex.h
+-rw-rw-rw-  1 codespace root          2 Dec 19 20:09 txt
