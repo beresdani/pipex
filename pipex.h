@@ -48,7 +48,7 @@ void	multi_parent_process(t_plist **lst, t_data *data, int ind);
 void	child_process(int fd[2], t_data *data, int ind);
 void	parent_process(int fd[2], t_data *data, int ind);
 char	*get_path(char **env);
-char	*get_dir(char *str, char *cmd);
+char	*get_dir(char *str, char **args, t_plist *lst);
 void	free_array(char **arr);
 int		single_pipe(char **argv, char **env);
 int		multi_pipe(int pipes, char **argv, char **env);
@@ -57,6 +57,7 @@ int		list_size(t_plist **lst);
 void	fd_closer(int end, t_plist **lst);
 void	multi_parent(t_plist **lst, int pipes, int i);
 void	child_processes(t_plist **lst, t_data *data, int ind);
-void	wait_for_child(t_plist **lst);
+void	wait_for_child(t_plist *lst);
+void	free_list(t_plist *lst);
 
 #endif

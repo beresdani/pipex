@@ -12,10 +12,10 @@
 
 #include "pipex.h"
 
-int	list_size(t_data **lst)
+int	list_size(t_plist **lst)
 {
 	int		count;
-	t_data	*ptr;
+	t_plist	*ptr;
 
 	count = 0;
 	ptr = *lst;
@@ -29,9 +29,9 @@ int	list_size(t_data **lst)
 	return (count);
 }
 
-t_data	*list_last(t_data **lst)
+t_plist	*list_last(t_plist **lst)
 {
-	t_data	*ptr;
+	t_plist	*ptr;
 
 	if (lst == NULL)
 		return (*lst);
@@ -46,9 +46,9 @@ t_data	*list_last(t_data **lst)
 	return (ptr);
 }
 
-void	add_pipe_node(t_data **lst, t_data *new)
+void	add_pipe_node(t_plist **lst, t_plist *new)
 {
-	t_data	*ptr;
+	t_plist	*ptr;
 
 	if (new == NULL)
 		return ;
@@ -75,15 +75,16 @@ char	*get_path(char **env)
 	return (NULL);
 }
 
-char	*get_dir(char *str, char *cmd)
+char	*get_dir(char *str, char **args, t_plist *lst)
 {
 	char	**dirs;
 	char	*dir;
+	char	*cmd;
 	int		i;
 
 	dirs = ft_split(str, 58);
 	i = 0;
-	cmd = ft_strjoin("/", cmd);
+	cmd = ft_strjoin("/", args[0]);
 	while (dirs[i] != NULL)
 	{
 		dir = ft_strjoin(dirs[i], cmd);
@@ -92,8 +93,13 @@ char	*get_dir(char *str, char *cmd)
 			free_array(dirs);
 			return (dir);
 		}
+		free (dir);
 		i++;
 	}
+	free (cmd);
+	free_array(args);
 	free_array(dirs);
-	return (NULL);
+	free_list(lst);
+	perror("wrong input");
+	exit(EXIT_FAILURE);
 }

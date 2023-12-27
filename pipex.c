@@ -38,7 +38,7 @@ void	child_process(int fd[2], t_data *data, int ind)
 	int		fd_inf;
 
 	args1 = ft_split(data->argv[ind], 32);
-	directory = get_dir(data->path, args1[0]);
+	directory = get_dir(data->path, args1, NULL);
 	close(fd[0]);
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
@@ -66,7 +66,7 @@ void	parent_process(int fd[2], t_data *data, int ind)
 	char	*directory2;
 
 	args2 = ft_split(data->argv[ind], 32);
-	directory2 = get_dir(data->path, args2[0]);
+	directory2 = get_dir(data->path, args2, NULL);
 	close(fd[1]);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
@@ -118,8 +118,8 @@ int	main(int argc, char **argv, char **env)
 	pipes = argc - 4;
 	if (argc < 5)
 	{
-		ft_printf("Wrong input.");
-		return (1);
+		perror("wrong input");
+    	exit(EXIT_FAILURE);
 	}
 	else if (argc == 5)
 	{

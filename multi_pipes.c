@@ -96,7 +96,7 @@ void	pipe_fork(t_plist **lst, t_data *data, int ind)
 int	multi_pipe(int pipes, char **argv, char **env)
 {
 	int		i;
-	t_plist	**lst;
+	t_plist	*lst;
 	t_data	data;		
 	
 	data.path = get_path(env);
@@ -104,14 +104,14 @@ int	multi_pipe(int pipes, char **argv, char **env)
 	data.pipes = pipes;
 	data.argv = argv;
 	i = 0;
-	lst = (t_plist **)malloc(sizeof(t_plist *));
-	*lst = NULL;
+	lst = NULL;
 	while (i < pipes + 1)
 	{
-		pipe_fork(lst, &data, i);
+		pipe_fork(&lst, &data, i);
     	i++;
 	}
 	wait_for_child(lst);
+	free_list(lst);
     return (0);
 }
 		
