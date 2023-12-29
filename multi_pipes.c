@@ -48,6 +48,7 @@ void	child_processes(t_plist **lst, t_data *data, int ind)
 		multi_child_process(lst, data, ind - 1);
 	else
 		last_child_process(lst, data, ind);
+	
 	exit(EXIT_SUCCESS);
 }
 

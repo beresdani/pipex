@@ -43,6 +43,7 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
 	{
+		fd_closer(0, lst);
 		free_array(args1);
 		free(args1);
 		perror("open");
@@ -107,9 +108,11 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	fd_closer(1, lst);
 	args2 = ft_split(data->argv[ind + 2], 32);
 	directory2 = get_dir(data->path, args2, *lst);
+	printf("%s\n", directory2);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
+		close (node->fd[0]);
 		free_array(args2);
 		free(args2);
 		perror("open");
@@ -119,6 +122,7 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[0], STDIN_FILENO);
 	close (node->fd[0]);
 	close(fd_outf);
+	
 	if (execve(directory2, args2, data->env) == -1)
 	{
 		free_array(args2);
