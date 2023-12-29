@@ -75,7 +75,7 @@ char	*get_path(char **env)
 	return (NULL);
 }
 
-char	*get_dir(char *str, char **args, t_plist *lst)
+char	*get_dir(char *str, char **args, int pid, t_plist *lst)
 {
 	char	**dirs;
 	char	*dir;
@@ -84,7 +84,14 @@ char	*get_dir(char *str, char **args, t_plist *lst)
 
 	if (args[0] == NULL)
 	{
-		ft_printf("command not found\n");
+		ft_printf("bash: %s: command not found\n");
+		free_array(args);
+		free_list(lst);
+		exit(EXIT_FAILURE);
+	}
+	else if (str == NULL)
+	{
+		ft_printf("bash: %s: command not found\n", args[0]);
 		free_array(args);
 		free_list(lst);
 		exit(EXIT_FAILURE);
@@ -103,6 +110,8 @@ char	*get_dir(char *str, char **args, t_plist *lst)
 		free (dir);
 		i++;
 	}
+	if (pid != 0)
+		wait(NULL);
 	ft_printf("%s: command not found\n", args[0]);
 	free (cmd);
 	free_array(args);

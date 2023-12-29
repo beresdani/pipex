@@ -31,20 +31,22 @@ void	free_array(char **arr)
 	free(arr);
 }
 
-void	child_process(int fd[2], t_data *data, int ind)
+void	child_process(int fd[2], t_data *data, int ind, int pid)
 {
 	char	**args1;
 	char	*directory;
 	int		fd_inf;
 
 	args1 = ft_split(data->argv[ind], 32);
-	directory = get_dir(data->path, args1, NULL);
+	directory = get_dir(data->path, args1, pid, NULL);
 	close(fd[0]);
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
 	{
 		free_array(args1);
-		perror("open");
+		perror("bash: infile");
+		close(fd[1]);
+		close(fd_inf);
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_inf, STDIN_FILENO);
@@ -59,20 +61,22 @@ void	child_process(int fd[2], t_data *data, int ind)
 	}
 }
 
-void	parent_process(int fd[2], t_data *data, int ind)
+void	parent_process(int fd[2], t_data *data, int ind, int pid)
 {
 	int		fd_outf;
 	char	**args2;
 	char	*directory2;
 
 	args2 = ft_split(data->argv[ind], 32);
-	directory2 = get_dir(data->path, args2, NULL);
+	directory2 = get_dir(data->path, args2, pid, NULL);
 	close(fd[1]);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
 		free_array(args2);
-		perror("open");
+		perror("bash: outfile");
+		close(fd[0]);
+		close(fd_outf);
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_outf, STDOUT_FILENO);
@@ -102,9 +106,9 @@ int	single_pipe(char **argv, char **env)
 	if (pid == -1)
 		return (2);
 	if (pid == 0)
-		child_process(fd, &data, 2);
+		child_process(fd, &data, 2, pid);
 	else
-		parent_process(fd, &data, 3);
+		parent_process(fd, &data, 3, pid);
 	close(fd[0]);
 	close(fd[1]);
 	waitpid(pid, NULL, 0);
