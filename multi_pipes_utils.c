@@ -108,7 +108,6 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	fd_closer(1, lst);
 	args2 = ft_split(data->argv[ind + 2], 32);
 	directory2 = get_dir(data->path, args2, *lst);
-	printf("%s\n", directory2);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{

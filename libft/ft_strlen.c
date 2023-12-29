@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dberes <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 16:54:11 by dberes            #+#    #+#             */
-/*   Updated: 2023/09/19 11:12:39 by dberes           ###   ########.fr       */
+/*   Updated: 2023/12/29 12:51:35 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(void)
 {
 	char *str;
 
-	str = "jksdfbkjd";
+	str = "";
 	printf("%zu\n", ft_strlen(str));
 	printf("%lu\n", strlen(str));
 	return (0);

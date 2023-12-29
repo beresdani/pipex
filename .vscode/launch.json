@@ -6,12 +6,14 @@
 	"configurations": [
 
 
+
+
 		{
 			"type": "lldb",
 			"request": "launch",
 			"name": "Debug",
 			"program": "${workspaceFolder}/pipex",
-			"args": ["infile", "ls -l", "grep root", "wc -w", "outfile"],
+			"args": ["infile", "ls -l", "cat", "outfile"],
 			"cwd": "${workspaceFolder}"
 		}
 	]
