@@ -133,7 +133,7 @@ int	main(int argc, char **argv, char **env)
 	}
 	else
 	{
-		if (multi_pipe(pipes, argv, env) != 0)
+		if (multi_pipe(pipes, argv, env, argc) != 0)
 			return (3);
 		return (0);
 	}

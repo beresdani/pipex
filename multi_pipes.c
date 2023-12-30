@@ -48,24 +48,20 @@ void	child_processes(t_plist **lst, t_data *data, int ind)
 		multi_child_process(lst, data, ind - 1);
 	else
 		last_child_process(lst, data, ind);
-	
 	exit(EXIT_SUCCESS);
 }
 
-void	multi_parent(t_plist **lst, int pipes, int i)
+void	multi_parent(t_plist *lst)
 {
 	t_plist	*node;
 	
-	if (i == pipes)
-		{
-			node = *lst;
-			while (node != NULL)
-			{
-				close (node->fd[0]);
-				close (node->fd[1]);
-				node = node->next;
-			}
-		}
+	node = lst;
+	while (node != NULL)
+	{
+		close (node->fd[0]);
+		close (node->fd[1]);
+		node = node->next;
+	}
 }
 
 void	pipe_fork(t_plist **lst, t_data *data, int ind)
@@ -90,11 +86,10 @@ void	pipe_fork(t_plist **lst, t_data *data, int ind)
 	add_pipe_node(lst, node);
 	if (node->pid == 0)
 		child_processes(lst, data, ind);
-	else
-		multi_parent(lst, data->pipes, ind);
+	/*waitpid(node->pid, 0, 0);*/
 }
 
-int	multi_pipe(int pipes, char **argv, char **env)
+int	multi_pipe(int pipes, char **argv, char **env, int argc)
 {
 	int		i;
 	t_plist	*lst;
@@ -104,14 +99,17 @@ int	multi_pipe(int pipes, char **argv, char **env)
 	data.env = env;
 	data.pipes = pipes;
 	data.argv = argv;
+	data.argc = argc;
 	i = 0;
 	lst = NULL;
+	check_commands(&data);
 	while (i < pipes + 1)
 	{
 		pipe_fork(&lst, &data, i);
     	i++;
 	}
-	wait_for_child(lst);
+	/*wait_for_child(lst);*/
+	multi_parent(lst);
 	free_list(lst);
     return (0);
 }

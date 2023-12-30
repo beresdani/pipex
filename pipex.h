@@ -36,9 +36,11 @@ typedef struct s_plist
 typedef struct s_data
 {
 	int		pipes;
+	int		argc;
 	char	*path;
 	char	**env;
 	char	**argv;
+	char	**dirs;
 }	t_data;
 
 void	first_child_process(t_plist **lst, t_data *data, int ind);
@@ -51,14 +53,15 @@ char	*get_path(char **env);
 char	*get_dir(char *str, char **args, int pid, t_plist *lst);
 void	free_array(char **arr);
 int		single_pipe(char **argv, char **env);
-int		multi_pipe(int pipes, char **argv, char **env);
+int		multi_pipe(int pipes, char **argv, char **env, int argc);
 void	add_pipe_node(t_plist **lst, t_plist *new);
 int		list_size(t_plist **lst);
 void	fd_closer(int end, t_plist **lst);
-void	multi_parent(t_plist **lst, int pipes, int i);
+void	multi_parent(t_plist *lst);
 void	child_processes(t_plist **lst, t_data *data, int ind);
 void	wait_for_child(t_plist *lst);
 void	free_list(t_plist *lst);
-char	*get_dir_multi(char *str, char **args, t_plist *lst);
+char	*get_dir_multi(char *str, char **args);
+void	check_commands(t_data *data);
 
 #endif

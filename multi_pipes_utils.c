@@ -16,40 +16,30 @@ void	free_list(t_plist *lst)
 
 void	wait_for_child(t_plist *lst)
 {
-	int		i;
 	t_plist	*node;
 
-	i = 0;
 	node = lst;
-	while (node != NULL)
+	while (node->next != NULL)
 	{	
-		waitpid(node->pid, NULL, 0);
+		 waitpid(node->pid, NULL, 0);
+		/*printf("%d\n", waitpid(node->pid, NULL, 0));*/
+		/*if (waitpid(node->pid, NULL, 0) == -1)
+    	{
+        	perror("waitpid");
+        	exit(EXIT_FAILURE);
+    	}*/
 		node = node->next;
-		i++;
 	}
 }
 
-char	*get_dir_multi(char *str, char **args, t_plist *lst)
+char	*get_dir_multi(char *str, char **args)
 {
 	char	**dirs;
 	char	*dir;
 	char	*cmd;
 	int		i;
-
-	if (args[0] == NULL)
-	{
-		ft_printf("bash: %s: command not found\n");
-		free_array(args);
-		free_list(lst);
-		exit(EXIT_FAILURE);
-	}
-	else if (str == NULL)
-	{
-		ft_printf("bash: %s: command not found\n", args[0]);
-		free_array(args);
-		free_list(lst);
-		exit(EXIT_FAILURE);
-	}
+	
+	
 	dirs = ft_split(str, 58);
 	i = 0;
 	cmd = ft_strjoin("/", args[0]);
@@ -64,29 +54,62 @@ char	*get_dir_multi(char *str, char **args, t_plist *lst)
 		free (dir);
 		i++;
 	}
-	wait_for_child(lst);
-	ft_printf("%s: command not found\n", args[0]);
-	free (cmd);
-	free_array(args);
-	free_array(dirs);
-	free_list(lst);
-	exit(EXIT_FAILURE);
+	free(cmd);
+	return (NULL);
+}
+
+void	check_commands(t_data *data)
+{
+	int		i;
+	char	**args;
+	char	*directory;
+	int		ex;
+
+	i = 2;
+	ex = 0;
+	while (i < data->argc - 1)
+	{
+		args = ft_split(data->argv[i], 32);
+		if (args[0] == NULL)
+		{
+			ft_printf("bash: %s: command not found\n");
+			free_array(args);
+			ex = 1;
+		}
+		else if (data->path == NULL)
+		{
+			ft_printf("bash: %s: command not found\n", args[0]);
+			free_array(args);
+			ex = 2;
+		}
+		if (ex != 2)
+		{
+			directory = get_dir_multi(data->path, args);
+			if (directory == NULL)
+			{
+				ft_printf("%s: command not found\n", args[0]);
+				free_array(args);
+				ex = 1;
+			}
+			data->dirs[i] = directory;
+		}
+		i++;
+	}
+	if (ex != 0)
+		exit(EXIT_FAILURE);
 }
 
 void	first_child_process(t_plist **lst, t_data *data, int ind)
 {
-	char	**args1;
-	char	*directory;
 	int		fd_inf;
 	t_plist	*node;
+	char	**args;
 
 	node = *lst;
-	args1 = ft_split(data->argv[ind + 2], 32);
-	directory = get_dir_multi(data->path, args1, *lst);
+	
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
 	{
-		free_array(args1);
 		perror("bash: infile");
 		fd_closer(0, lst);
 		exit(EXIT_FAILURE);
@@ -95,9 +118,10 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[1], STDOUT_FILENO);
 	close(fd_inf);
 	fd_closer(0, lst);
-	if (execve(directory, args1, data->env) == -1)
+	args = ft_split(data->argv[ind + 2], 32);
+	if (execve(data->dirs[ind], args, data->env) == -1)
 	{
-		free_array(args1);
+		free_array(args);
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
@@ -105,10 +129,9 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 
 void	multi_child_process(t_plist **lst, t_data *data, int ind)
 {
-	char	**args1;
-	char	*directory;
 	t_plist	*node;
 	int		i;
+	char	**args;
 
 	i = 0;
 	node = *lst;
@@ -117,14 +140,13 @@ void	multi_child_process(t_plist **lst, t_data *data, int ind)
 		node = node->next;
 		i++;
 	}
-	args1 = ft_split(data->argv[ind + 3], 32);
-	directory = get_dir_multi(data->path, args1, *lst);
 	dup2(node->fd[0], STDIN_FILENO);
 	dup2(node->next->fd[1], STDOUT_FILENO);
 	fd_closer(0, lst);
-	if (execve(directory, args1, data->env) == -1)
+	args = ft_split(data->argv[ind + 2], 32);
+	if (execve(data->dirs[ind], args, data->env) == -1)
 	{
-		free_array(args1);
+		free_array(args);
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
@@ -133,11 +155,9 @@ void	multi_child_process(t_plist **lst, t_data *data, int ind)
 void	last_child_process(t_plist **lst, t_data *data, int ind)
 {
 	int		fd_outf;
-	char	**args2;
-	char	*directory2;
 	t_plist	*node;
 	int		i;
-
+	char	**args;
 	i = 0;
 	node = *lst;
 	while (i < ind -1)
@@ -146,12 +166,9 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 		i++;
 	}
 	fd_closer(1, lst);
-	args2 = ft_split(data->argv[ind + 2], 32);
-	directory2 = get_dir_multi(data->path, args2, *lst);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
-		free_array(args2);
 		perror("bash: outfile");
 		close (node->fd[0]);
 		exit(EXIT_FAILURE);
@@ -160,10 +177,10 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[0], STDIN_FILENO);
 	close (node->fd[0]);
 	close(fd_outf);
-	
-	if (execve(directory2, args2, data->env) == -1)
+	args = ft_split(data->argv[ind], 32);
+	if (execve(data->dirs[ind], args, data->env) == -1)
 	{
-		free_array(args2);
+		free_array(args);
 		perror("Could not execve");
 		exit(EXIT_FAILURE);
 	}
