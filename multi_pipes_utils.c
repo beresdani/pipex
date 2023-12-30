@@ -119,7 +119,7 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 	close(fd_inf);
 	fd_closer(0, lst);
 	args = ft_split(data->argv[ind + 2], 32);
-	if (execve(data->dirs[ind], args, data->env) == -1)
+	if (execve(data->dirs[ind + 2], args, data->env) == -1)
 	{
 		free_array(args);
 		perror("execve");
@@ -143,8 +143,8 @@ void	multi_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[0], STDIN_FILENO);
 	dup2(node->next->fd[1], STDOUT_FILENO);
 	fd_closer(0, lst);
-	args = ft_split(data->argv[ind + 2], 32);
-	if (execve(data->dirs[ind], args, data->env) == -1)
+	args = ft_split(data->argv[ind + 3], 32);
+	if (execve(data->dirs[ind + 3], args, data->env) == -1)
 	{
 		free_array(args);
 		perror("execve");
@@ -177,8 +177,8 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[0], STDIN_FILENO);
 	close (node->fd[0]);
 	close(fd_outf);
-	args = ft_split(data->argv[ind], 32);
-	if (execve(data->dirs[ind], args, data->env) == -1)
+	args = ft_split(data->argv[ind + 2], 32);
+	if (execve(data->dirs[ind + 2], args, data->env) == -1)
 	{
 		free_array(args);
 		perror("Could not execve");
