@@ -95,12 +95,15 @@ void	check_commands(t_data *data)
 			}
 			data->dirs[i - 2] = directory;
 		}
-		if (args)
+		if (ex == 0)
 			free_array(args);
 		i++;
 	}
 	if (ex != 0)
+	{
+			free_array(data->dirs);
 			exit(EXIT_FAILURE);
+	}
 }
 
 void	first_child_process(t_plist **lst, t_data *data, int ind)
