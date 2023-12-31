@@ -9,12 +9,13 @@
 
 
 
+
 		{
 			"type": "lldb",
 			"request": "launch",
 			"name": "Debug",
 			"program": "${workspaceFolder}/pipex",
-			"args": ["infile", "ls -l", "grep root", "cat", "outfile"],
+			"args": ["infile", "ls -l", "greproot", "cat", "outfile"],
 			"cwd": "${workspaceFolder}"
 		}
 	]

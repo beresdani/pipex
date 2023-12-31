@@ -63,5 +63,8 @@ void	wait_for_child(t_plist *lst);
 void	free_list(t_plist *lst);
 char	*get_dir_multi(char *str, char **args);
 void	check_commands(t_data *data);
+void	free_exit(char **args, t_data *data, int ex_code);
+t_plist	*get_to_node(t_plist *node, int ind);
+void	dirs_calloc(t_data *data);
 
 #endif

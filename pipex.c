@@ -12,12 +12,6 @@
 
 #include "pipex.h"
 
-/*
-void	free_exit(int err)
-{
-
-}
-*/
 void	free_array(char **arr)
 {
 	int	i;
@@ -123,7 +117,7 @@ int	main(int argc, char **argv, char **env)
 	if (argc < 5)
 	{
 		perror("wrong input");
-    	exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	else if (argc == 5)
 	{

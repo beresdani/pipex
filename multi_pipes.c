@@ -54,7 +54,7 @@ void	child_processes(t_plist **lst, t_data *data, int ind)
 void	multi_parent(t_plist *lst)
 {
 	t_plist	*node;
-	
+
 	node = lst;
 	while (node != NULL)
 	{
@@ -67,7 +67,7 @@ void	multi_parent(t_plist *lst)
 void	pipe_fork(t_plist **lst, t_data *data, int ind)
 {
 	t_plist	*node;
-	
+
 	node = (t_plist *)malloc(sizeof(t_plist));
 	if (node == NULL)
 		return ;
@@ -76,8 +76,9 @@ void	pipe_fork(t_plist **lst, t_data *data, int ind)
 	{
 		if (pipe(node->fd) == -1)
 		{
+			free_array(data->dirs);
 			perror("pipe");
-    		exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 	}
 	node->pid = fork();
@@ -86,7 +87,6 @@ void	pipe_fork(t_plist **lst, t_data *data, int ind)
 	add_pipe_node(lst, node);
 	if (node->pid == 0)
 		child_processes(lst, data, ind);
-	/*waitpid(node->pid, 0, 0);*/
 }
 
 int	multi_pipe(int pipes, char **argv, char **env, int argc)
@@ -94,30 +94,23 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 	int		i;
 	t_plist	*lst;
 	t_data	data;		
-	
+
 	data.path = get_path(env);
 	data.env = env;
 	data.pipes = pipes;
 	data.argv = argv;
 	data.argc = argc;
-	data.dirs = (char **)ft_calloc(sizeof(char *), (argc - 2));
-	if (data.dirs == NULL)
-	{
-		perror("malloc failed");
-		exit(EXIT_FAILURE);
-	}
+	dirs_calloc(&data);
 	i = 0;
 	lst = NULL;
 	check_commands(&data);
 	while (i < pipes + 1)
 	{
 		pipe_fork(&lst, &data, i);
-    	i++;
+		i++;
 	}
-	/*wait_for_child(lst);*/
 	multi_parent(lst);
 	free_list(lst);
 	free_array(data.dirs);
-    return (0);
+	return (0);
 }
-		

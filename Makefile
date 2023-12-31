@@ -14,7 +14,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra -g
 LIBFT =-Llibft/ -lft
 NAME = pipex
-SRC = pipex.c multi_pipes.c list_utils.c multi_pipes_utils.c
+SRC = pipex.c multi_pipes.c list_utils.c multi_pipes_utils.c child_processes.c
 # MLX=-lXext -lX11 -lz -lm -lmlx
 OBJ = $(SRC:.c=.o)
 
