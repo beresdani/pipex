@@ -48,6 +48,7 @@ char	*get_dir_multi(char *str, char **args)
 		dir = ft_strjoin(dirs[i], cmd);
 		if (access(dir, F_OK) == 0)
 		{
+			free(cmd);
 			free_array(dirs);
 			return (dir);
 		}
@@ -55,6 +56,7 @@ char	*get_dir_multi(char *str, char **args)
 		i++;
 	}
 	free(cmd);
+	free_array(dirs);
 	return (NULL);
 }
 
@@ -91,12 +93,14 @@ void	check_commands(t_data *data)
 				free_array(args);
 				ex = 1;
 			}
-			data->dirs[i] = directory;
+			data->dirs[i - 2] = directory;
 		}
+		if (args)
+			free_array(args);
 		i++;
 	}
 	if (ex != 0)
-		exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 }
 
 void	first_child_process(t_plist **lst, t_data *data, int ind)
@@ -106,7 +110,7 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 	char	**args;
 
 	node = *lst;
-	
+	args = ft_split(data->argv[ind + 2], 32);
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
 	{
@@ -118,8 +122,7 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[1], STDOUT_FILENO);
 	close(fd_inf);
 	fd_closer(0, lst);
-	args = ft_split(data->argv[ind + 2], 32);
-	if (execve(data->dirs[ind + 2], args, data->env) == -1)
+	if (execve(data->dirs[ind], args, data->env) == -1)
 	{
 		free_array(args);
 		perror("execve");
@@ -144,7 +147,7 @@ void	multi_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->next->fd[1], STDOUT_FILENO);
 	fd_closer(0, lst);
 	args = ft_split(data->argv[ind + 3], 32);
-	if (execve(data->dirs[ind + 3], args, data->env) == -1)
+	if (execve(data->dirs[ind + 1], args, data->env) == -1)
 	{
 		free_array(args);
 		perror("execve");
@@ -158,7 +161,9 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	t_plist	*node;
 	int		i;
 	char	**args;
+
 	i = 0;
+	args = ft_split(data->argv[ind + 2], 32);
 	node = *lst;
 	while (i < ind -1)
 	{
@@ -177,8 +182,8 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[0], STDIN_FILENO);
 	close (node->fd[0]);
 	close(fd_outf);
-	args = ft_split(data->argv[ind + 2], 32);
-	if (execve(data->dirs[ind + 2], args, data->env) == -1)
+	
+	if (execve(data->dirs[ind], args, data->env) == -1)
 	{
 		free_array(args);
 		perror("Could not execve");

@@ -100,6 +100,12 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 	data.pipes = pipes;
 	data.argv = argv;
 	data.argc = argc;
+	data.dirs = (char **)ft_calloc(sizeof(char *), (argc - 2));
+	if (data.dirs == NULL)
+	{
+		perror("malloc failed");
+		exit(EXIT_FAILURE);
+	}
 	i = 0;
 	lst = NULL;
 	check_commands(&data);
@@ -111,6 +117,7 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 	/*wait_for_child(lst);*/
 	multi_parent(lst);
 	free_list(lst);
+	free_array(data.dirs);
     return (0);
 }
 		
