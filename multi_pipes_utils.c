@@ -89,6 +89,7 @@ void	check_commands(t_data *data)
 		{
 			ft_printf("bash: %s: command not found\n", args[0]);
 			free_array(args);
+			args_freed = 1;
 			ex = 2;
 		}
 		if (ex != 2)
