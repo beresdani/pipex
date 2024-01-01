@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   multi_pipes_utils.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/01 10:51:56 by dberes            #+#    #+#             */
+/*   Updated: 2024/01/01 14:02:43 by dberes           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 void	free_exit(char **args, t_data *data, int ex_code)
@@ -7,6 +19,18 @@ void	free_exit(char **args, t_data *data, int ex_code)
 		free_array(data->dirs);
 		free_array(args);
 		perror("Could not execve");
+		exit(EXIT_FAILURE);
+	}
+	else if (ex_code == 2)
+	{
+		ft_printf("pipex: : command not found\n");
+		free_array(args);
+		exit(EXIT_FAILURE);
+	}
+	else if (ex_code == 3)
+	{
+		ft_printf("pipex: %s: command not found\n", args[0]);
+		free_array(args);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -62,59 +86,4 @@ char	*get_dir_multi(char *str, char **args)
 	free(cmd);
 	free_array(dirs);
 	return (NULL);
-}
-
-void	check_commands(t_data *data)
-{
-	int		i;
-	char	**args;
-	char	*directory;
-	int		ex;
-	int		args_freed;
-
-	i = 2;
-	ex = 0;
-	while (i < data->argc - 1)
-	{
-		args_freed = 0;
-		args = ft_split(data->argv[i], 32);
-		if (args[0] == NULL)
-		{
-			ft_printf("bash: %s: command not found\n");
-			free_array(args);
-			args_freed = 1;
-			ex = 1;
-		}
-		else if (data->path == NULL)
-		{
-			ft_printf("bash: %s: command not found\n", args[0]);
-			free_array(args);
-			args_freed = 1;
-			ex = 2;
-		}
-		if (ex != 2)
-		{
-			directory = get_dir_multi(data->path, args);
-			if (directory == NULL)
-			{
-				ft_printf("%s: command not found\n", args[0]);
-				free_array(args);
-				args_freed = 1;
-				ex = 1;
-			}
-			if (ex != 1)
-				data->dirs[i - 2] = directory;
-		}
-		if (args_freed == 0)
-		{
-			free_array(args);
-		}
-		i++;
-	}
-	if (ex != 0)
-	{
-		free(directory);
-		free_array(data->dirs);
-		exit(EXIT_FAILURE);
-	}
 }

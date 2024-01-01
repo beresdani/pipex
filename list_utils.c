@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 14:03:36 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/29 14:02:14 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/01 14:12:28 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ char	*get_path(char **env)
 	return (NULL);
 }
 
-char	*get_dir(char *str, char **args, int pid, t_plist *lst)
+char	*get_dir(char *str, char **args, int pid)
 {
 	char	**dirs;
 	char	*dir;
@@ -83,19 +83,9 @@ char	*get_dir(char *str, char **args, int pid, t_plist *lst)
 	int		i;
 
 	if (args[0] == NULL)
-	{
-		ft_printf("bash: %s: command not found\n");
-		free_array(args);
-		free_list(lst);
-		exit(EXIT_FAILURE);
-	}
+		free_exit(args, NULL, 2);
 	else if (str == NULL)
-	{
-		ft_printf("bash: %s: command not found\n", args[0]);
-		free_array(args);
-		free_list(lst);
-		exit(EXIT_FAILURE);
-	}
+		free_exit(args, NULL, 3);
 	dirs = ft_split(str, 58);
 	i = 0;
 	cmd = ft_strjoin("/", args[0]);
@@ -112,10 +102,8 @@ char	*get_dir(char *str, char **args, int pid, t_plist *lst)
 	}
 	if (pid != 0)
 		wait(NULL);
-	ft_printf("%s: command not found\n", args[0]);
-	free (cmd);
-	free_array(args);
-	free_array(dirs);
-	free_list(lst);
-	exit(EXIT_FAILURE);
+	free(cmd);
+	free_array(dirs); 
+	free_exit(args, NULL, 3);
+	return (0);
 }

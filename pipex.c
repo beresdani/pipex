@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 15:01:58 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/19 10:49:30 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/01 13:12:11 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	child_process(int fd[2], t_data *data, int ind, int pid)
 	int		fd_inf;
 
 	args1 = ft_split(data->argv[ind], 32);
-	directory = get_dir(data->path, args1, pid, NULL);
+	directory = get_dir(data->path, args1, pid);
 	close(fd[0]);
 	fd_inf = open("infile", O_RDONLY);
 	if (fd_inf == -1)
@@ -48,11 +48,7 @@ void	child_process(int fd[2], t_data *data, int ind, int pid)
 	close(fd_inf);
 	close(fd[1]);
 	if (execve(directory, args1, data->env) == -1)
-	{
-		free_array(args1);
-		perror("execve");
-		exit(EXIT_FAILURE);
-	}
+		free_exit(args1, NULL, 1);
 }
 
 void	parent_process(int fd[2], t_data *data, int ind, int pid)
@@ -62,7 +58,7 @@ void	parent_process(int fd[2], t_data *data, int ind, int pid)
 	char	*directory2;
 
 	args2 = ft_split(data->argv[ind], 32);
-	directory2 = get_dir(data->path, args2, pid, NULL);
+	directory2 = get_dir(data->path, args2, pid);
 	close(fd[1]);
 	fd_outf = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
@@ -78,11 +74,7 @@ void	parent_process(int fd[2], t_data *data, int ind, int pid)
 	close(fd[0]);
 	close(fd_outf);
 	if (execve(directory2, args2, data->env) == -1)
-	{
-		free_array(args2);
-		perror("Could not execve");
-		exit(EXIT_FAILURE);
-	}
+		free_exit(args2, NULL, 1);
 }
 
 int	single_pipe(char **argv, char **env)
@@ -127,6 +119,7 @@ int	main(int argc, char **argv, char **env)
 	}
 	else
 	{
+		
 		if (multi_pipe(pipes, argv, env, argc) != 0)
 			return (3);
 		return (0);

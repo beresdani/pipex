@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:18:20 by dberes            #+#    #+#             */
-/*   Updated: 2023/12/19 15:06:49 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/01 12:45:59 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	multi_parent_process(t_plist **lst, t_data *data, int ind);
 void	child_process(int fd[2], t_data *data, int ind, int pid);
 void	parent_process(int fd[2], t_data *data, int ind, int pid);
 char	*get_path(char **env);
-char	*get_dir(char *str, char **args, int pid, t_plist *lst);
+char	*get_dir(char *str, char **args, int pid);
 void	free_array(char **arr);
 int		single_pipe(char **argv, char **env);
 int		multi_pipe(int pipes, char **argv, char **env, int argc);
@@ -66,5 +66,7 @@ void	check_commands(t_data *data);
 void	free_exit(char **args, t_data *data, int ex_code);
 t_plist	*get_to_node(t_plist *node, int ind);
 void	dirs_calloc(t_data *data);
+void	free_handler(t_data *data, char **args, int *ex, int *args_freed);
+void	free_handler2(char **args, int *ex, int *args_freed);
 
 #endif

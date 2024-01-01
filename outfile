@@ -1,8 +1,1 @@
--rw-rw-rw-  1 codespace root       1493 Dec 31 23:12 Makefile
-drwxrwxrwx+ 2 codespace root       4096 Dec 31 22:15 libft
--rw-rw-rw-  1 codespace root       2456 Dec 29 20:00 list_utils.c
--rw-rw-rw-  1 codespace root       2563 Dec 31 23:40 multi_pipes.c
--rw-rw-rw-  1 codespace root       1813 Dec 31 23:49 multi_pipes_utils.c
--rw-rw-rw-  1 codespace root          0 Dec 31 23:51 outfile
--rw-rw-rw-  1 codespace root       2974 Dec 31 23:10 pipex.c
--rw-rw-rw-  1 codespace root       2499 Dec 31 23:40 pipex.h
+0
