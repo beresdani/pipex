@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 14:03:36 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 20:47:11 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/02 23:59:19 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ char	*get_path(char **env)
 	}
 	return (NULL);
 }
-
 
 void	free_array(char **arr)
 {

@@ -6,10 +6,9 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:00 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 21:56:48 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/03 00:04:12 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "pipex.h"
 
@@ -96,7 +95,7 @@ void	check_commands(t_data *data, int *ex)
 void	file_create(t_data *data)
 {
 	int	fd_outf;
-	
+
 	fd_outf = open(data->argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
@@ -124,7 +123,7 @@ char	*get_dir(char *str, char **args, t_data *data)
 		free(cmd);
 		free_array(dirs);
 		free_exit_single(args, data, 4);
-	}	
+	}
 	while (dirs[i] != NULL)
 	{
 		dir = ft_strjoin(dirs[i], cmd);

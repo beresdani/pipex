@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 11:21:06 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 22:20:43 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/03 00:05:43 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,9 @@ void	set_data(t_data *data, int pipes, char **argv, char **env)
 void	file_create(t_data *data)
 {
 	int	fd_outf;
-	
-	fd_outf = open(data->argv[data->argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0666);
+
+	fd_outf = open(data->argv[data->argc - 1],
+			O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
 		perror("pipex: failed to open outfile");

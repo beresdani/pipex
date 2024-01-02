@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 20:14:28 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 22:18:25 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/03 00:05:09 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 		i++;
 	}
 	multi_parent(lst);
-	
 	free_list(lst);
 	free_array(data.dirs);
 	return (0);
 }
+
 int	main(int argc, char **argv, char **env)
 {
 	int	pipes;

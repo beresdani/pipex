@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 10:51:56 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 18:56:14 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/03 00:00:33 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ char	*get_dir_multi(char *str, char **args, t_data *data)
 		free(cmd);
 		free_array(dirs);
 		free_exit(args, data, 4);
-	}	
+	}
 	while (dirs[i] != NULL)
 	{
 		dir = ft_strjoin(dirs[i], cmd);

@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 10:51:32 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 20:00:04 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/02 23:58:51 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void	multi_child_process(t_plist **lst, t_data *data, int ind)
 	{
 		perror("Error duplicating file descriptor");
 		close(node->fd[0]);
-        fd_closer(0, lst);
-        exit(EXIT_FAILURE);
+		fd_closer(0, lst);
+		exit(EXIT_FAILURE);
 	}
 	fd_closer(0, lst);
 	args = ft_split(data->argv[ind + 3], 32);
@@ -71,7 +71,8 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	node = *lst;
 	node = get_to_node(node, ind);
 	fd_closer(1, lst);
-	fd_outf = open(data->argv[data->argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	fd_outf = open(data->argv[data->argc - 1],
+			O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd_outf == -1)
 	{
 		perror("pipex: failed to open file");
@@ -85,10 +86,10 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	{
 		perror("Error duplicating file descriptor");
 		close(fd_outf);
-        fd_closer(0, lst);
+		fd_closer(0, lst);
 		free_array(args);
 		free_array(data->dirs);
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	close (node->fd[0]);
 	close(fd_outf);
@@ -108,4 +109,3 @@ t_plist	*get_to_node(t_plist *node, int ind)
 	}
 	return (node);
 }
-
