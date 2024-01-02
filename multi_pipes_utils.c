@@ -65,6 +65,8 @@ char	*get_dir_multi(char *str, char **args, t_plist *lst)
 		i++;
 	}
 	wait_for_child(lst);
+	// open X_OK
+	// perror
 	ft_printf("%s: command not found\n", args[0]);
 	free (cmd);
 	free_array(args);

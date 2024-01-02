@@ -1,0 +1,8 @@
+!*.c
+!*.h
+!Makefile
+pipex-tester/
+.vscode/
+pipex
+pipex_bonus
+.nfs*
