@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 14:03:36 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/01 14:12:28 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/02 20:47:11 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,32 +75,26 @@ char	*get_path(char **env)
 	return (NULL);
 }
 
-char	*get_dir(char *str, char **args, int pid)
-{
-	char	**dirs;
-	char	*dir;
-	char	*cmd;
-	int		i;
 
-	if (args[0] == NULL)
-		free_exit(args, NULL, 2);
-	else if (str == NULL)
-		free_exit(args, NULL, 3);
-	dirs = ft_split(str, 58);
+void	free_array(char **arr)
+{
+	int	i;
+
 	i = 0;
-	cmd = ft_strjoin("/", args[0]);
-	while (dirs[i] != NULL)
+	while (arr[i] != NULL)
 	{
-		dir = ft_strjoin(dirs[i], cmd);
-		if (access(dir, F_OK) == 0)
-		{
-			free_array(dirs);
-			return (dir);
-		}
-		free (dir);
+		free(arr[i]);
 		i++;
 	}
-	if (pid != 0)
-		wait(NULL);
-	return (free(cmd), free_array(dirs), free_exit(args, NULL, 3), NULL);
+	free(arr);
+}
+
+void	dirs_calloc(t_data *data)
+{
+	data->dirs = (char **)ft_calloc(sizeof(char *), (data->argc - 2));
+	if (data->dirs == NULL)
+	{
+		ft_printf("malloc failed");
+		exit(EXIT_FAILURE);
+	}
 }

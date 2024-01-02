@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 10:51:56 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/01 14:02:43 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/02 18:56:14 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,13 @@ void	free_exit(char **args, t_data *data, int ex_code)
 		perror("Could not execve");
 		exit(EXIT_FAILURE);
 	}
-	else if (ex_code == 2)
+	else if (ex_code == 4)
 	{
-		ft_printf("pipex: : command not found\n");
-		free_array(args);
-		exit(EXIT_FAILURE);
-	}
-	else if (ex_code == 3)
-	{
-		ft_printf("pipex: %s: command not found\n", args[0]);
-		free_array(args);
+		if (data && data->dirs)
+			free_array(data->dirs);
+		if (args)
+			free_array(args);
+		ft_printf("malloc failed");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -61,7 +58,7 @@ void	wait_for_child(t_plist *lst)
 	}
 }
 
-char	*get_dir_multi(char *str, char **args)
+char	*get_dir_multi(char *str, char **args, t_data *data)
 {
 	char	**dirs;
 	char	*dir;
@@ -69,11 +66,21 @@ char	*get_dir_multi(char *str, char **args)
 	int		i;
 
 	dirs = ft_split(str, 58);
+	if (!dirs)
+		free_exit(args, data, 4);
 	i = 0;
 	cmd = ft_strjoin("/", args[0]);
+	if (!cmd)
+	{
+		free(cmd);
+		free_array(dirs);
+		free_exit(args, data, 4);
+	}	
 	while (dirs[i] != NULL)
 	{
 		dir = ft_strjoin(dirs[i], cmd);
+		if (!dirs)
+			free_exit(dirs, NULL, 4);
 		if (access(dir, F_OK) == 0)
 		{
 			free(cmd);
