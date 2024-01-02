@@ -31,6 +31,7 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 	dup2(node->fd[1], STDOUT_FILENO);
 	close(fd_inf);
 	fd_closer(0, lst);
+	printf("%s\n", data->dirs[ind]);
 	if (execve(data->dirs[ind], args, data->env) == -1)
 		free_exit(args, data, 1);
 }

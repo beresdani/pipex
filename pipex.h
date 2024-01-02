@@ -62,11 +62,12 @@ void	child_processes(t_plist **lst, t_data *data, int ind);
 void	wait_for_child(t_plist *lst);
 void	free_list(t_plist *lst);
 char	*get_dir_multi(char *str, char **args);
-void	check_commands(t_data *data);
+void	check_commands(t_data *data, int *ex);
 void	free_exit(char **args, t_data *data, int ex_code);
 t_plist	*get_to_node(t_plist *node, int ind);
 void	dirs_calloc(t_data *data);
-void	free_handler(t_data *data, char **args, int *ex, int *args_freed);
-void	free_handler2(char **args, int *ex, int *args_freed);
+void	path_error(t_data *data);
+void	check_args(t_data *data, int *ex);
+void	set_data(t_data *data, int pipes, char **argv, char **env, int argc);
 
 #endif

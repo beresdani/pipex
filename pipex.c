@@ -108,7 +108,7 @@ int	main(int argc, char **argv, char **env)
 	pipes = argc - 4;
 	if (argc < 5)
 	{
-		perror("wrong input");
+		ft_printf("wrong input");
 		exit(EXIT_FAILURE);
 	}
 	else if (argc == 5)
@@ -119,7 +119,6 @@ int	main(int argc, char **argv, char **env)
 	}
 	else
 	{
-		
 		if (multi_pipe(pipes, argv, env, argc) != 0)
 			return (3);
 		return (0);

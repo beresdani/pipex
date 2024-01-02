@@ -92,18 +92,19 @@ void	pipe_fork(t_plist **lst, t_data *data, int ind)
 int	multi_pipe(int pipes, char **argv, char **env, int argc)
 {
 	int		i;
+	int		ex;
 	t_plist	*lst;
 	t_data	data;		
 
-	data.path = get_path(env);
-	data.env = env;
-	data.pipes = pipes;
-	data.argv = argv;
-	data.argc = argc;
+	ex = 0;
+	set_data(&data, pipes, argv, env, argc);
+	if (data.path == NULL)
+		path_error(&data);
+	check_args(&data, &ex);
 	dirs_calloc(&data);
 	i = 0;
 	lst = NULL;
-	check_commands(&data);
+	check_commands(&data, &ex);
 	while (i < pipes + 1)
 	{
 		pipe_fork(&lst, &data, i);

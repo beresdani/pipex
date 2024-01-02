@@ -102,8 +102,5 @@ char	*get_dir(char *str, char **args, int pid)
 	}
 	if (pid != 0)
 		wait(NULL);
-	free(cmd);
-	free_array(dirs); 
-	free_exit(args, NULL, 3);
-	return (0);
+	return (free(cmd), free_array(dirs), free_exit(args, NULL, 3), NULL);
 }
