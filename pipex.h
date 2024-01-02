@@ -68,6 +68,6 @@ t_plist	*get_to_node(t_plist *node, int ind);
 void	dirs_calloc(t_data *data);
 void	path_error(t_data *data);
 void	check_args(t_data *data, int *ex);
-void	set_data(t_data *data, int pipes, char **argv, char **env, int argc);
+void	set_data(t_data *data, int pipes, char **argv, char **env);
 
 #endif

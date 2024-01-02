@@ -97,7 +97,8 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 	t_data	data;		
 
 	ex = 0;
-	set_data(&data, pipes, argv, env, argc);
+	set_data(&data, pipes, argv, env);
+	data.argc = argc;
 	if (data.path == NULL)
 		path_error(&data);
 	check_args(&data, &ex);

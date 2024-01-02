@@ -66,11 +66,11 @@ void	check_commands(t_data *data, int *ex)
 				ft_printf("pipex: %s: command not found\n", args[0]);
 				*ex = 1;
 			}
-			else
-				data->dirs[i - 2] = directory;
+			else if (*ex == 0)
+				data->dirs[i - 2] = ft_strdup(directory);
+			free(directory);
 		}
 		free_array(args);
-		/*free(directory);*/
 		i++;
 	}
 	if (*ex == 1)
@@ -80,11 +80,10 @@ void	check_commands(t_data *data, int *ex)
 	}
 }
 
-void	set_data(t_data *data, int pipes, char **argv, char **env, int argc)
+void	set_data(t_data *data, int pipes, char **argv, char **env)
 {
 	data->path = get_path(env);
 	data->env = env;
 	data->pipes = pipes;
 	data->argv = argv;
-	data->argc = argc;
 }
