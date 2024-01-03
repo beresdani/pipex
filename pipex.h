@@ -24,6 +24,7 @@
 # include <fcntl.h>
 # include <sys/types.h> 
 # include <sys/wait.h>
+# include <errno.h>
 
 typedef struct s_plist
 {
@@ -62,14 +63,14 @@ void	child_processes(t_plist **lst, t_data *data, int ind);
 void	wait_for_child(t_plist *lst);
 void	free_list(t_plist *lst);
 char	*get_dir_multi(char *str, char **args, t_data *data);
-void	check_commands(t_data *data, int *ex);
+void	check_commands(char **args, t_data *data, int ind);
 void	free_exit(char **args, t_data *data, int ex_code);
 t_plist	*get_to_node(t_plist *node, int ind);
 void	dirs_calloc(t_data *data);
-void	path_error(t_data *data);
-void	check_args(t_data *data, int *ex);
+void	check_args(char **args, int *ex);
 void	set_data(t_data *data, int pipes, char **argv, char **env);
 void	free_exit_single(char **args, t_data *data, int ex_code);
 void	file_create(t_data *data);
+void	free_exit_malloc(char **args, t_data *data);
 
 #endif
