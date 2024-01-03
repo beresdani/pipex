@@ -72,5 +72,6 @@ void	set_data(t_data *data, int pipes, char **argv, char **env);
 void	free_exit_single(char **args, t_data *data, int ex_code);
 void	file_create(t_data *data);
 void	free_exit_malloc(char **args, t_data *data);
+char	*make_cmd(char **args, char **dirs, t_data *data);
 
 #endif

@@ -31,13 +31,18 @@ void	check_commands(char **args, t_data *data, int ind)
 	}
 }
 
-void	set_data(t_data *data, int pipes, char **argv, char **env)
+char	*make_cmd(char **args, char **dirs, t_data *data)
 {
-	data->path = get_path(env);
-	data->env = env;
-	data->pipes = pipes;
-	data->argv = argv;
-	data->argc = 5;
+	char	*cmd;
+
+	cmd = ft_strjoin("/", args[0]);
+	if (!cmd)
+	{
+		free(cmd);
+		free_array(dirs);
+		free_exit_malloc(args, data);
+	}
+	return (cmd);
 }
 
 char	*get_dir(char *str, char **args, t_data *data)
@@ -51,13 +56,7 @@ char	*get_dir(char *str, char **args, t_data *data)
 	if (!dirs)
 		free_exit_malloc(args, data);
 	i = 0;
-	cmd = ft_strjoin("/", args[0]);
-	if (!cmd)
-	{
-		free(cmd);
-		free_array(dirs);
-		free_exit_malloc(args, data);
-	}
+	cmd = make_cmd(args, dirs, data);
 	while (dirs[i] != NULL)
 	{
 		dir = ft_strjoin(dirs[i], cmd);

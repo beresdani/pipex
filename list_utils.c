@@ -87,13 +87,3 @@ void	free_array(char **arr)
 	}
 	free(arr);
 }
-
-void	dirs_calloc(t_data *data)
-{
-	data->dirs = (char **)ft_calloc(sizeof(char *), (data->argc - 2));
-	if (data->dirs == NULL)
-	{
-		ft_printf("malloc failed");
-		exit(EXIT_FAILURE);
-	}
-}
