@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 20:14:28 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/03 00:05:09 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/04 15:09:57 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 	t_data	data;		
 
 	ex = 0;
-	set_data(&data, pipes, argv, env);
+	set_data_bonus(&data, pipes, argv, env);
 	data.argc = argc;
 	file_create(&data);
 	if (data.path == NULL)
@@ -78,8 +78,8 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 	check_args(&data, &ex);
 	i = 0;
 	lst = NULL;
-	check_commands(&data, &ex);
-	while (i < pipes + 1)
+	check_commands_bonus(&data, &ex);
+	while (i < argc - 3)
 	{
 		pipe_fork(&lst, &data, i);
 		i++;

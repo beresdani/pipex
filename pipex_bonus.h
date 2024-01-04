@@ -6,7 +6,7 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 00:01:20 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/03 00:02:31 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/04 14:16:01 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ typedef struct s_data
 {
 	int		pipes;
 	int		argc;
+	int		fd_inf;
+	int		fd_outf;
 	char	*path;
 	char	**env;
 	char	**argv;
@@ -58,13 +60,14 @@ void	child_processes(t_plist **lst, t_data *data, int ind);
 void	wait_for_child(t_plist *lst);
 void	free_list(t_plist *lst);
 char	*get_dir_multi(char *str, char **args, t_data *data);
-void	check_commands(t_data *data, int *ex);
+void	check_commands_bonus(t_data *data, int *ex);
 void	free_exit(char **args, t_data *data, int ex_code);
 t_plist	*get_to_node(t_plist *node, int ind);
 void	dirs_calloc(t_data *data);
 void	path_error(t_data *data);
 void	check_args(t_data *data, int *ex);
-void	set_data(t_data *data, int pipes, char **argv, char **env);
+void	set_data_bonus(t_data *data, int pipes, char **argv, char **env);
 void	file_create(t_data *data);
+char	*ft_strjoin3(char *str1, char *str2, char *str3);
 
 #endif

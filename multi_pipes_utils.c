@@ -6,11 +6,24 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 10:51:56 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/03 00:00:33 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/04 13:55:50 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
+
+void	free_array(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
 
 void	free_exit(char **args, t_data *data, int ex_code)
 {

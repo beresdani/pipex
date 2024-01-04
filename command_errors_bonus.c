@@ -6,11 +6,11 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 11:21:06 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/03 00:05:43 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/04 14:49:29 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 void	path_error(t_data *data)
 {
@@ -49,13 +49,19 @@ void	check_args(t_data *data, int *ex)
 	}
 }
 
-void	check_commands(t_data *data, int *ex)
+void	check_commands_bonus(t_data *data, int *ex)
 {
 	int		i;
 	char	**args;
 	char	*directory;
 
 	i = 2;
+	data->fd_inf = open(data->argv[1], O_RDONLY);
+	if (data->fd_inf == -1)
+	{
+		perror("bash: infile");
+		*ex = 1;
+	}
 	while (i < data->argc - 1)
 	{
 		directory = NULL;
@@ -91,7 +97,7 @@ void	check_commands(t_data *data, int *ex)
 	}
 }
 
-void	set_data(t_data *data, int pipes, char **argv, char **env)
+void	set_data_bonus(t_data *data, int pipes, char **argv, char **env)
 {
 	data->path = get_path(env);
 	data->env = env;
@@ -101,15 +107,13 @@ void	set_data(t_data *data, int pipes, char **argv, char **env)
 
 void	file_create(t_data *data)
 {
-	int	fd_outf;
-
-	fd_outf = open(data->argv[data->argc - 1],
+	data->fd_outf = open(data->argv[data->argc - 1],
 			O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	if (fd_outf == -1)
+	if (data->fd_outf == -1)
 	{
 		perror("pipex: failed to open outfile");
-		close(fd_outf);
+		close(data->fd_outf);
 		exit(EXIT_FAILURE);
 	}
-	close(fd_outf);
+	close(data->fd_outf);
 }

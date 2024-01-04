@@ -6,11 +6,11 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 14:03:50 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/03 00:02:48 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/04 13:55:55 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 void	fd_closer(int end, t_plist **lst)
 {

@@ -6,11 +6,11 @@
 /*   By: dberes <dberes@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 14:03:36 by dberes            #+#    #+#             */
-/*   Updated: 2024/01/02 23:59:19 by dberes           ###   ########.fr       */
+/*   Updated: 2024/01/04 14:33:50 by dberes           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 int	list_size(t_plist **lst)
 {
@@ -61,29 +61,15 @@ void	add_pipe_node(t_plist **lst, t_plist *new)
 	ptr->next = new;
 }
 
-char	*get_path(char **env)
-{
-	int		i;
-
-	i = 0;
-	while (env[i] != NULL)
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-			return (env[i]);
-		i++;
-	}
-	return (NULL);
-}
-
-void	free_array(char **arr)
+t_plist	*get_to_node(t_plist *node, int ind)
 {
 	int	i;
 
 	i = 0;
-	while (arr[i] != NULL)
+	while (i < ind - 1)
 	{
-		free(arr[i]);
+		node = node->next;
 		i++;
 	}
-	free(arr);
+	return (node);
 }

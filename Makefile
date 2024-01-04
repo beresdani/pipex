@@ -3,10 +3,10 @@ CFLAGS = -Wall -Werror -Wextra -g
 LIBFT =-Llibft/ -lft
 NAME = pipex
 NAME2 = pipex_bonus
-SRC = pipex.c list_utils.c command_errors.c pipex_utils.c
+SRC = pipex.c command_errors.c pipex_utils.c message_printing.c
 
 SRC2 = pipex_bonus.c multi_pipes.c list_utils.c multi_pipes_utils.c child_processes.c \
-		command_errors_bonus.c
+		command_errors_bonus.c message_printing_bonus.c
 # MLX=-lXext -lX11 -lz -lm -lmlx
 OBJ = $(SRC:.c=.o)
 OBJ2 = $(SRC2:.c=.o)
