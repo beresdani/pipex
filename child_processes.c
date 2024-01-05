@@ -19,12 +19,10 @@ void	first_child_process(t_plist **lst, t_data *data, int ind)
 
 	node = *lst;
 	args = ft_split(data->argv[ind + 2], 32);
-	
 	dup2(data->fd_inf, STDIN_FILENO);
 	dup2(node->fd[1], STDOUT_FILENO);
 	close(data->fd_inf);
 	fd_closer(0, lst);
-	printf("%s\n", data->dirs[ind]);
 	if (execve(data->dirs[ind], args, data->env) == -1)
 		free_exit(args, data, 1);
 }
@@ -35,7 +33,7 @@ void	multi_child_process(t_plist **lst, t_data *data, int ind)
 	char	**args;
 
 	node = *lst;
-	node = get_to_node(node, ind);
+	node = get_to_node(node, ind + 1);
 	dup2(node->fd[0], STDIN_FILENO);
 	if (dup2(node->next->fd[1], STDOUT_FILENO) == -1)
 	{
@@ -88,4 +86,3 @@ void	last_child_process(t_plist **lst, t_data *data, int ind)
 	if (execve(data->dirs[ind], args, data->env) == -1)
 		free_exit(args, data, 1);
 }
-

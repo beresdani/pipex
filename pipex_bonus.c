@@ -85,6 +85,7 @@ int	multi_pipe(int pipes, char **argv, char **env, int argc)
 		i++;
 	}
 	multi_parent(lst);
+	wait_for_child(lst);
 	free_list(lst);
 	free_array(data.dirs);
 	return (0);

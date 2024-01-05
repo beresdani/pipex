@@ -25,7 +25,7 @@ void	free_array(char **arr)
 	free(arr);
 }
 
-void	free_exit(char **args, t_data *data, int ex_code)
+void	free_exit(char **args, t_data *data, char **dirs, int ex_code)
 {
 	if (ex_code == 1)
 	{
@@ -36,6 +36,8 @@ void	free_exit(char **args, t_data *data, int ex_code)
 	}
 	else if (ex_code == 4)
 	{
+		if (dirs)
+			free_array(dirs);
 		if (data && data->dirs)
 			free_array(data->dirs);
 		if (args)
@@ -69,6 +71,7 @@ void	wait_for_child(t_plist *lst)
 		waitpid(node->pid, NULL, 0);
 		node = node->next;
 	}
+	waitpid(node->pid, NULL, 0);
 }
 
 char	*get_dir_multi(char *str, char **args, t_data *data)
@@ -80,30 +83,20 @@ char	*get_dir_multi(char *str, char **args, t_data *data)
 
 	dirs = ft_split(str, 58);
 	if (!dirs)
-		free_exit(args, data, 4);
+		free_exit(args, data, NULL, 4);
 	i = 0;
 	cmd = ft_strjoin("/", args[0]);
 	if (!cmd)
-	{
-		free(cmd);
-		free_array(dirs);
-		free_exit(args, data, 4);
-	}
+		free_exit(args, data, dirs, 4);
 	while (dirs[i] != NULL)
 	{
 		dir = ft_strjoin(dirs[i], cmd);
 		if (!dirs)
-			free_exit(dirs, NULL, 4);
+			free_exit(dirs, NULL, NULL, 4);
 		if (access(dir, F_OK) == 0)
-		{
-			free(cmd);
-			free_array(dirs);
-			return (dir);
-		}
+			return (free(cmd), free_array(dirs), dir);
 		free (dir);
 		i++;
 	}
-	free(cmd);
-	free_array(dirs);
-	return (NULL);
+	return (free(cmd), free_array(dirs), NULL);
 }

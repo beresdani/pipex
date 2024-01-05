@@ -43,6 +43,8 @@ typedef struct s_data
 	char	**env;
 	char	**argv;
 	char	**dirs;
+	char	*cmd;
+	char	**dirs2;
 }	t_data;
 
 void	first_child_process(t_plist **lst, t_data *data, int ind);
@@ -61,7 +63,7 @@ void	wait_for_child(t_plist *lst);
 void	free_list(t_plist *lst);
 char	*get_dir_multi(char *str, char **args, t_data *data);
 void	check_commands_bonus(t_data *data, int *ex);
-void	free_exit(char **args, t_data *data, int ex_code);
+void	free_exit(char **args, t_data *data, char **dirs, int ex_code);
 t_plist	*get_to_node(t_plist *node, int ind);
 void	dirs_calloc(t_data *data);
 void	path_error(t_data *data);

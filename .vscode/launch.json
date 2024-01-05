@@ -9,14 +9,16 @@
 
 
 
+
+
 	
 		{
 			"type": "lldb",
 			"request": "launch",
 			"name": "Debug",
-			"program": "./pipex_bonus",
+			"program": "${workspaceFolder}/pipex_bonus",
 			"cwd": "${workspaceFolder}",
-			"args": ["infile", "ls -l", "cat", "cat", "outfile"]
+			"args": ["infile", "ls -l", "cat", "cat", "cat", "outfile"]
 		}
 	]
 }
